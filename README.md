@@ -8,7 +8,7 @@ See [here](https://github.com/scainburger/partyreadycheck/issues/4) for more inf
 
 ## Plugin Usage
 
-When in a ToB or ToA party, type "R" in any chat visible to your party.
+When in a ToB, ToA or the Fractured Archive party, type "R" in any chat visible to your party.
 
 This will mark you as ready (indicated with an R) in the party frame.
 
