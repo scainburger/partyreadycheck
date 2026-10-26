@@ -30,8 +30,8 @@ import java.util.*;
 
 @PluginDescriptor(
 		name = "Party Ready Check",
-		description = "Display an alert to check ready status of your party in ToB or ToA",
-		tags = {"tob","theatre","theater","blood","toa","tombs","amascut","party","ready","check"}
+		description = "Display an alert to check ready status of your party in ToB, ToA or the Fractured Archive",
+		tags = {"tob","theatre","theater","blood","toa","tombs","amascut","tfa","fractured","archive","party","ready","check"}
 )
 
 @Slf4j
@@ -41,9 +41,12 @@ public class PartyReadyCheckPlugin extends Plugin {
 	final int TOA_HEADER_WIDGET_ID = 50659332;
 	final int TOB_PARTY_WIDGET_ID = 1835020;
 	final int TOA_PARTY_WIDGET_ID = 50659333;
+	final int TFA_HEADER_WIDGET_ID = 63897604;
+	final int TFA_PARTY_WIDGET_ID = 63897605;
 
 	Widget tobRaidingPartyHeader;
 	Widget toaRaidingPartyHeader;
+	Widget tfaRaidingPartyHeader;
 	Widget raidingPartyWidget = null;
 
 	private List<String> readyMessages = new ArrayList<>();
@@ -170,6 +173,7 @@ public class PartyReadyCheckPlugin extends Plugin {
 
 		tobRaidingPartyHeader = client.getWidget(TOB_HEADER_WIDGET_ID);
 		toaRaidingPartyHeader = client.getWidget(TOA_HEADER_WIDGET_ID);
+		tfaRaidingPartyHeader = client.getWidget(TFA_HEADER_WIDGET_ID);
 		raidingPartyWidget = null;
 
 		if (
@@ -186,14 +190,22 @@ public class PartyReadyCheckPlugin extends Plugin {
 		) {
 			raidingPartyWidget = client.getWidget(TOA_PARTY_WIDGET_ID);
 		}
+		if (
+			tfaRaidingPartyHeader != null &&
+			!(tfaRaidingPartyHeader.getText().toUpperCase(Locale.ROOT).equals("NO PARTY")) &&
+			!tfaRaidingPartyHeader.isHidden()
+		) {
+			raidingPartyWidget = client.getWidget(TFA_PARTY_WIDGET_ID);
+		}
 
 		if (raidingPartyWidget == null || raidingPartyWidget.isHidden())
 			return; // no party or party widget is hidden
 
 		String msgStandardized = Text.standardize(chatMessage.getMessage());
 		//If the standardized message wildcard matches one of the config values, set the message text to either R or UN R
-		String msg = getMessage(unreadyMessages, msgStandardized, "UN R");
-		msg = getMessage(readyMessages, msgStandardized, "R");
+		String msg = getMessage(readyMessages, msgStandardized, "R");
+		if (!msg.equals("R"))
+			msg = getMessage(unreadyMessages, msgStandardized, "UN R");
 
 		if (msg.equals("R") || msg.equals("UN R"))
 		{
